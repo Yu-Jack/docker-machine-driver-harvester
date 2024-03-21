@@ -39,7 +39,6 @@ func (d *Driver) Create() error {
 	}
 	vmBuilder := builder.NewVMBuilder("docker-machine-driver-harvester").
 		Namespace(d.VMNamespace).Name(d.MachineName).CPU(d.CPU).Memory(d.MemorySize).
-		CloudInitDisk(builder.CloudInitDiskName, builder.DiskBusVirtio, false, 0, *cloudInitSource).
 		EvictionStrategy(true).RunStrategy(kubevirtv1.RunStrategyRerunOnFailure)
 
 	// affinity
@@ -90,6 +89,8 @@ func (d *Driver) Create() error {
 	if err != nil {
 		return err
 	}
+	// cloudinit disk
+	vmBuilder = vmBuilder.CloudInitDisk(builder.CloudInitDiskName, builder.DiskBusVirtio, false, 0, *cloudInitSource)
 	// vm
 	vm, err := vmBuilder.VM()
 	if err != nil {
